@@ -1,0 +1,52 @@
+# @local/dsh-wolfram
+#
+# This package is a zero-build DSH Host plugin, installed into a profile by
+# linking this directory. Everything it needs at runtime is committed: the
+# entry point, lib/, locale/, docs (README.md), the icon, and the bundle patch.
+# Nothing is generated inside this directory, so the rules below only keep
+# machine-local debris out of the history.
+
+# --- dependencies -----------------------------------------------------------
+# The plugin has none today; ignore them if someone adds a dependency later.
+node_modules/
+.pnp.*
+.yarn/cache/
+.yarn/install-state.gz
+
+# --- local scratch ----------------------------------------------------------
+# Manual debugging of lib/runner.wls (PLAN.md appendix B) can leave these behind.
+.scratch/
+*.tmp
+*.temp
+
+# --- test and coverage output ----------------------------------------------
+# test/verify.mjs runs entirely in the OS temp directory and writes nothing here.
+coverage/
+.nyc_output/
+*.lcov
+
+# --- logs ------------------------------------------------------------------
+*.log
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- secrets and local overrides -------------------------------------------
+# The bundle row in the profile's cordis.patch.yml is the place for local
+# settings; never commit credentials or machine-specific overrides here.
+.env
+.env.*
+!.env.example
+*.local
+
+# --- editors and IDEs -------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- operating-system metadata ---------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Wolfram 数学求解",
+    "description": "在本机 Wolfram Engine 内核中求值 Wolfram 语言，返回精确结果与 LaTeX，用于复杂数学问题。"
+  }
+}

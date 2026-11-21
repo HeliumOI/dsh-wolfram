@@ -1,0 +1,14 @@
+- insert:
+    - id: wolfram-math
+      name: '@local/dsh-wolfram'
+      config:
+        # The kernel binary is what runs. Launching it directly avoids
+        # `wolframscript`, which rewrites its profile configuration on start.
+        kernelPath: 'C:\Program Files\Wolfram Research\Wolfram Engine\15.0\SystemFiles\Kernel\Binaries\Windows-x86-64\wolfram.exe'
+        # Only used to locate the kernel when kernelPath is unset.
+        wolframscriptPath: 'C:\Program Files\Wolfram Research\Wolfram Engine\15.0\SystemFiles\Kernel\Binaries\Windows-x86-64\wolframscript.exe'
+        timeoutMs: 30000
+        autoNudge: 'heuristic'
+        # auto: confine the kernel whenever this session's sandbox policy is
+        # confined; off: always run unconfined.
+        sandbox: 'auto'

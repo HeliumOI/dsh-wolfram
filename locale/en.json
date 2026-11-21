@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Wolfram math",
+    "description": "Evaluates Wolfram Language in a local Wolfram Engine kernel and returns exact results with LaTeX, for complex math problems."
+  }
+}

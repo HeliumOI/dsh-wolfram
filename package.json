@@ -1,0 +1,25 @@
+{
+  "name": "@local/dsh-wolfram",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Wolfram Engine math evaluation for DeepSeek Harness",
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "lib",
+    "locale/*.json",
+    "README.md",
+    "icon.svg"
+  ]
+}
