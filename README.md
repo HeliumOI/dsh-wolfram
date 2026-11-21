@@ -1,4 +1,4 @@
-# Wolfram math
+# dsh-wolfram
 
 A DeepSeek Harness plugin that evaluates Wolfram Language in the local Wolfram Engine, so demanding
 mathematics is computed rather than estimated.
@@ -40,7 +40,57 @@ mathematics is computed rather than estimated.
   lost (its configuration warning is noise, not a failure). The kernel writes to the inherited handles and
   needs no configuration write, so launching it directly keeps diagnostics intact under confinement.
 - No shell, PATH, or sandbox configuration is involved: the tool spawns the kernel binary with
-  `-noprompt -script` and reads the result from a per-call temporary directory.
+  `-noprompt -script` and reads the JSON result from the child's stdout, so a confined kernel never has to
+  write a file.
+
+## Install
+
+This bundle is installed by **linking** its directory into a profile, not by copying it, so the files in
+this repository are the running plugin.
+
+1. **Check the prerequisite first.** Wolfram Engine must be installed and activated. The plugin finds the
+   kernel automatically under `C:\Program Files\Wolfram Research`; if the engine lives elsewhere, point
+   `kernelPath` at it (see Configuration).
+2. **Add the plugin.** Open the **Plugins** panel in the sidebar → **Add plugin** → **Install a third-party
+   plugin** (it accepts npm packages, Git repositories, and local directories), then choose this directory:
+   `C:\Users\sophon\Documents\dsh-wolfram\wolfram-plugin`.
+   *Chinese UI: 插件 → 添加插件 → 安装第三方插件.*
+3. **Restart when the profile asks.** A first install can activate through hot reload; the profile tells
+   you when it needs a full restart. Replacing the files of an already installed package — for example
+   after editing `lib/` — always needs that restart, because the running process keeps the module
+   generation it loaded at start-up.
+4. **Open a new session and verify.** A session fixes its tool list when it is created, so sessions that
+   already existed will not gain the tool. In a new session ask something like *"solve x^3 - 2x + 1 = 0 for
+   its exact roots"* and expect a `wolfram` call. The card shows the timing and, when the session's policy
+   is confined, a `· sandboxed` marker. Calling the same expression again should answer `cached`.
+
+### What installation changes
+
+- The profile's `package.json` gains `"@local/dsh-wolfram": "link:…/wolfram-plugin"` and lists the package
+  in `dsh.profile.bundles`; `node_modules/@local/dsh-wolfram` becomes a junction to this directory.
+- Options live in the **profile**, not in this repository: `%USERPROFILE%\.dsh\profiles\<profile>\cordis.patch.yml`,
+  row `id: wolfram-math`. That row is the only place to change options today — there is no settings form
+  yet, because Settings only renders forms for plugins that ship their own client page.
+- Installing affects every session in that profile and survives a restart. Other profiles are untouched.
+- The repository is independent of the profile: installing, disabling, or removing the plugin never
+  modifies these files.
+
+### Update, disable, remove
+
+- **Update:** edit this directory, then restart DSH.
+- **Disable:** toggle the component off in the Plugins panel. The tool and its guidance disappear from new
+  sessions; the package stays installed and can be re-enabled.
+- **Remove:** remove it from the Plugins panel. This directory and its Git history stay as they are.
+
+### If something is wrong
+
+| Symptom | Cause and fix |
+|---|---|
+| No `wolfram` tool in a session | The session opened before the install, or the module generation is stale. Open a new session; if it is still missing, restart DSH. |
+| `crashed · could not start … (ENOENT)` | `kernelPath` is wrong, or the engine is not activated. Point it at `wolfram.exe`. |
+| `crashed · the session's sandbox could not be enforced` | No sandbox backend could wrap the kernel. Fix the backend, or set `sandbox: off` to accept an unconfined run. |
+| `timeout` on a hard integral | The budget defaults to 30 s. Raise `timeoutMs`, or pass a larger `timeoutSec` up to that budget. |
+| Every call takes 5–8 s | Expected: each call starts a fresh kernel. Batch related questions into one expression. |
 
 ## Usage
 
